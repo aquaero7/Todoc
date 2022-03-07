@@ -33,7 +33,8 @@ import static org.junit.Assert.assertThat;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
+// import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 /**
  * Instrumented test, which will execute on an Android device.
