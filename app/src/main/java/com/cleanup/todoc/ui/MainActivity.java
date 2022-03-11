@@ -1,6 +1,8 @@
 package com.cleanup.todoc.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,16 +17,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.cleanup.todoc.R;
+import com.cleanup.todoc.database.TodocDatabase;
+import com.cleanup.todoc.database.dao.ProjectDao;
+import com.cleanup.todoc.database.dao.TaskDao;
+import com.cleanup.todoc.injections.Injection;
+import com.cleanup.todoc.injections.ViewModelFactory;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -33,21 +48,36 @@ import java.util.Date;
  * @author Gaëtan HERFRAY
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
+
+    //  // TODO : ----------------------------------------------------------------------------------
+    /**
+     * ViewModel
+     */
+    private TaskViewModel mTaskViewModel;
+    //  // TODO ------------------------------------------------------------------------------------
+
     /**
      * List of all projects available in the application
      */
-    private final Project[] allProjects = Project.getAllProjects();
+    //  // TODO : ----------------------------------------------------------------------------------
+    // private final Project[] allProjects = Project.getAllProjects();
+    private List<Project> allProjects;
+    //  // TODO ------------------------------------------------------------------------------------
 
+    //  // TODO : ----------------------------------------------------------------------------------
     /**
      * List of all current tasks of the application
      */
-    @NonNull
-    private final ArrayList<Task> tasks = new ArrayList<>();
-
+    // @NonNull
+    // private final ArrayList<Task> tasks = new ArrayList<>();
+    //  // TODO ------------------------------------------------------------------------------------
     /**
      * The adapter which handles the list of tasks
      */
-    private final TasksAdapter adapter = new TasksAdapter(tasks, this);
+    //  // TODO : ----------------------------------------------------------------------------------
+    private TasksAdapter adapter;
+    // private final TasksAdapter adapter = new TasksAdapter(tasks, this);
+    //  // TODO ------------------------------------------------------------------------------------
 
     /**
      * The sort method to be used to display tasks
@@ -98,6 +128,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
+        //  // TODO : ------------------------------------------------------------------------------
+        adapter = new TasksAdapter(this);
+        //  // TODO --------------------------------------------------------------------------------
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
 
@@ -107,7 +140,49 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 showAddTaskDialog();
             }
         });
+        //  // TODO : ------------------------------------------------------------------------------
+        configureViewModel();
+        getProjects();
+        getTasks();
+        //  // TODO --------------------------------------------------------------------------------
     }
+
+    //  // TODO : ----------------------------------------------------------------------------------
+    private void configureViewModel() {
+        ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(this);
+        mTaskViewModel = new ViewModelProvider(this, viewModelFactory).get(TaskViewModel.class);
+        mTaskViewModel.init();
+    }
+
+    private void updateProjects(List<Project> projects) {
+        allProjects = projects;
+    }
+
+    private void getProjects() {
+        mTaskViewModel.getProjects().observe(this, this::updateProjects);
+        /*  // TODO : A supprimer (autre méthode plus longue)
+        mTaskViewModel.getProjects().observe(this, new Observer<List<Project>>() {
+            @Override
+            public void onChanged(List<Project> projects) {
+                // updateProjects(projects);
+                allProjects = projects;
+            }
+        });
+        */
+    }
+
+    private void getTasks() {
+        mTaskViewModel.getTasks().observe(this, this::updateTasks);
+        /*  // TODO : A supprimer (autre méthode plus longue)
+        mTaskViewModel.getTasks().observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> tasks) {
+                updateTasks(tasks);
+            }
+        });
+        */
+    }
+    //  // TODO ------------------------------------------------------------------------------------
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -128,16 +203,21 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         } else if (id == R.id.filter_recent_first) {
             sortMethod = SortMethod.RECENT_FIRST;
         }
-
-        updateTasks();
+        //  // TODO : ------------------------------------------------------------------------------
+        // updateTasks();
+        getTasks();
+        //  // TODO --------------------------------------------------------------------------------
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onDeleteTask(Task task) {
-        tasks.remove(task);
-        updateTasks();
+        //  // TODO : ------------------------------------------------------------------------------
+        // tasks.remove(task);
+        // updateTasks();
+        mTaskViewModel.deleteTask(task);
+        // // TODO ---------------------------------------------------------------------------------
     }
 
     /**
@@ -164,8 +244,9 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             // If both project and name of the task have been set
             else if (taskProject != null) {
                 // TODO: Replace this by id of persisted task
+                //  // TODO : Done -----------------------------------------------------------------
+                /*
                 long id = (long) (Math.random() * 50000);
-
 
                 Task task = new Task(
                         id,
@@ -173,6 +254,10 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                         taskName,
                         new Date().getTime()
                 );
+                */
+
+                Task task = new Task(taskProject.getId(), taskName, new Date().getTime());
+                //  // TODO ------------------------------------------------------------------------
 
                 addTask(task);
 
@@ -209,14 +294,20 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        tasks.add(task);
-        updateTasks();
+        //  // TODO : ------------------------------------------------------------------------------
+        // tasks.add(task);
+        // updateTasks();
+        mTaskViewModel.createTask(task);
+        // // TODO ---------------------------------------------------------------------------------
     }
 
     /**
      * Updates the list of tasks in the UI
      */
-    private void updateTasks() {
+    //  //  TODO : ---------------------------------------------------------------------------------
+    // private void updateTasks() {
+    private void updateTasks(List<Task> tasks) {
+    // // TODO -------------------------------------------------------------------------------------
         if (tasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);
