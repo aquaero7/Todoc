@@ -49,35 +49,20 @@ import java.util.concurrent.Executor;
  */
 public class MainActivity extends AppCompatActivity implements TasksAdapter.DeleteTaskListener {
 
-    //  // TODO : ----------------------------------------------------------------------------------
     /**
      * ViewModel
      */
     private TaskViewModel mTaskViewModel;
-    //  // TODO ------------------------------------------------------------------------------------
 
     /**
      * List of all projects available in the application
      */
-    //  // TODO : ----------------------------------------------------------------------------------
-    // private final Project[] allProjects = Project.getAllProjects();
     private List<Project> allProjects;
-    //  // TODO ------------------------------------------------------------------------------------
 
-    //  // TODO : ----------------------------------------------------------------------------------
-    /**
-     * List of all current tasks of the application
-     */
-    // @NonNull
-    // private final ArrayList<Task> tasks = new ArrayList<>();
-    //  // TODO ------------------------------------------------------------------------------------
     /**
      * The adapter which handles the list of tasks
      */
-    //  // TODO : ----------------------------------------------------------------------------------
     private TasksAdapter adapter;
-    // private final TasksAdapter adapter = new TasksAdapter(tasks, this);
-    //  // TODO ------------------------------------------------------------------------------------
 
     /**
      * The sort method to be used to display tasks
@@ -128,9 +113,8 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         listTasks = findViewById(R.id.list_tasks);
         lblNoTasks = findViewById(R.id.lbl_no_task);
 
-        //  // TODO : ------------------------------------------------------------------------------
         adapter = new TasksAdapter(this);
-        //  // TODO --------------------------------------------------------------------------------
+
         listTasks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listTasks.setAdapter(adapter);
 
@@ -140,14 +124,12 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 showAddTaskDialog();
             }
         });
-        //  // TODO : ------------------------------------------------------------------------------
+
         configureViewModel();
         getProjects();
         getTasks();
-        //  // TODO --------------------------------------------------------------------------------
     }
 
-    //  // TODO : ----------------------------------------------------------------------------------
     private void configureViewModel() {
         ViewModelFactory viewModelFactory = Injection.provideViewModelFactory(this);
         mTaskViewModel = new ViewModelProvider(this, viewModelFactory).get(TaskViewModel.class);
@@ -160,29 +142,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     private void getProjects() {
         mTaskViewModel.getProjects().observe(this, this::updateProjects);
-        /*  // TODO : A supprimer (méthode sans lambda - plus longue)
-        mTaskViewModel.getProjects().observe(this, new Observer<List<Project>>() {
-            @Override
-            public void onChanged(List<Project> projects) {
-                // updateProjects(projects);
-                allProjects = projects;
-            }
-        });
-        */
     }
 
     private void getTasks() {
         mTaskViewModel.getTasks().observe(this, this::updateTasks);
-        /*  // TODO : A supprimer (autre méthode plus longue)
-        mTaskViewModel.getTasks().observe(this, new Observer<List<Task>>() {
-            @Override
-            public void onChanged(List<Task> tasks) {
-                updateTasks(tasks);
-            }
-        });
-        */
     }
-    //  // TODO ------------------------------------------------------------------------------------
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -203,21 +167,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
         } else if (id == R.id.filter_recent_first) {
             sortMethod = SortMethod.RECENT_FIRST;
         }
-        //  // TODO : ------------------------------------------------------------------------------
-        // updateTasks();
+
         getTasks();
-        //  // TODO --------------------------------------------------------------------------------
 
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onDeleteTask(Task task) {
-        //  // TODO : ------------------------------------------------------------------------------
-        // tasks.remove(task);
-        // updateTasks();
         mTaskViewModel.deleteTask(task);
-        // // TODO ---------------------------------------------------------------------------------
     }
 
     /**
@@ -243,24 +201,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
             // If both project and name of the task have been set
             else if (taskProject != null) {
-                // TODO: Replace this by id of persisted task
-                //  // TODO : Done -----------------------------------------------------------------
-                /*
-                long id = (long) (Math.random() * 50000);
 
-                Task task = new Task(
-                        id,
-                        taskProject.getId(),
-                        taskName,
-                        new Date().getTime()
-                );
-                */
-
+                // We get the auto generated task id
                 Task task = new Task(taskProject.getId(), taskName, new Date().getTime());
-                //  // TODO ------------------------------------------------------------------------
 
                 addTask(task);
-
                 dialogInterface.dismiss();
             }
             // If name has been set, but project has not been set (this should never occur)
@@ -294,20 +239,13 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      * @param task the task to be added to the list
      */
     private void addTask(@NonNull Task task) {
-        //  // TODO : ------------------------------------------------------------------------------
-        // tasks.add(task);
-        // updateTasks();
         mTaskViewModel.createTask(task);
-        // // TODO ---------------------------------------------------------------------------------
     }
 
     /**
      * Updates the list of tasks in the UI
      */
-    //  //  TODO : ---------------------------------------------------------------------------------
-    // private void updateTasks() {
     private void updateTasks(List<Task> tasks) {
-    // // TODO -------------------------------------------------------------------------------------
         if (tasks.size() == 0) {
             lblNoTasks.setVisibility(View.VISIBLE);
             listTasks.setVisibility(View.GONE);

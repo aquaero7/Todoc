@@ -38,20 +38,11 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     /**
      * Instantiates a new TasksAdapter.
      *
-     * @param tasks the list of tasks the adapter deals with to set
      */
-    //  // TODO : ----------------------------------------------------------------------------------
     TasksAdapter(@NonNull final DeleteTaskListener deleteTaskListener) {
         this.tasks = new ArrayList<>();
         this.deleteTaskListener = deleteTaskListener;
     }
-    /*
-    TasksAdapter(@NonNull final List<Task> tasks, @NonNull final DeleteTaskListener deleteTaskListener) {
-        this.tasks = tasks;
-        this.deleteTaskListener = deleteTaskListener;
-    }
-    */
-    //  // TODO ------------------------------------------------------------------------------------
 
     /**
      * Updates the list of tasks the adapter deals with.
