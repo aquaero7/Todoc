@@ -13,8 +13,6 @@ import java.util.List;
 @Dao
 public interface ProjectDao {
 
-    // Methods called in Dao tests
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertProjects(Project... projects);
 

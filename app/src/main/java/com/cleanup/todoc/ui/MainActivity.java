@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
 
     private void getProjects() {
         mTaskViewModel.getProjects().observe(this, this::updateProjects);
-        /*  // TODO : A supprimer (autre méthode plus longue)
+        /*  // TODO : A supprimer (méthode sans lambda - plus longue)
         mTaskViewModel.getProjects().observe(this, new Observer<List<Project>>() {
             @Override
             public void onChanged(List<Project> projects) {

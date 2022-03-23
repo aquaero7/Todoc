@@ -26,7 +26,7 @@ config=StructureConfiguration;
   "graphRestriction": {
     "classPackageExcludeFilter": "",
     "classPackageIncludeFilter": "",
-    "classNameExcludeFilter": "MainActivityInstrumentedTest",
+    "classNameExcludeFilter": "*_Impl*;MainActivityInstrumentedTest",
     "classNameIncludeFilter": "",
     "methodNameExcludeFilter": "",
     "methodNameIncludeFilter": "",
@@ -42,7 +42,7 @@ config=StructureConfiguration;
     "cutInterfaceStructures": false,
     "cutDataStructures": false,
     "cutGetterAndSetter": false,
-    "cutConstructors": false
+    "cutConstructors": true
   },
   "graphTraversal": {
     "forwardDepth": 6,
@@ -95,22 +95,40 @@ subgraph cluster_856774308 {
 	fillcolor="#d8d8d8"
 	style=filled
    
-   MainActivity592173596[
+   Injection701015556[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Injection</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ provideExecutor(): Executor</TD></TR>
+<TR><TD ALIGN="LEFT" >+ provideProjectDataSource(context: Context): ProjectDataRepository</TD></TR>
+<TR><TD ALIGN="LEFT" >+ provideTaskDataSource(context: Context): TaskDataRepository</TD></TR>
+<TR><TD ALIGN="LEFT" >+ provideViewModelFactory(context: Context): ViewModelFactory</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+MainActivity592173596[
 	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
 <TR><TD ALIGN="LEFT" >(C)MainActivity</TD></TR>
 <HR/>
 <TR><TD ALIGN="LEFT" >-   adapter: TasksAdapter [0..1]</TD></TR>
-<TR><TD ALIGN="LEFT" >-   allProjects: Project[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   allProjects: List&lt;Project&gt; [0..*]</TD></TR>
 <TR><TD ALIGN="LEFT" >+   dialog: AlertDialog [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >-   dialogEditText: EditText [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >-   dialogSpinner: Spinner [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >-   lblNoTasks: TextView [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >-   listTasks: RecyclerView [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mTaskViewModel: TaskViewModel [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >-   sortMethod: SortMethod [0..1]</TD></TR>
-<TR><TD ALIGN="LEFT" >-   tasks: ArrayList&lt;Task&gt; [0..*]</TD></TR>
 <HR/>
 <TR><TD ALIGN="LEFT" >- addTask(task: Task)</TD></TR>
+<TR><TD ALIGN="LEFT" >- configureViewModel()</TD></TR>
 <TR><TD ALIGN="LEFT" >- getAddTaskDialog(): AlertDialog</TD></TR>
+<TR><TD ALIGN="LEFT" >- getProjects()</TD></TR>
+<TR><TD ALIGN="LEFT" >- getTasks()</TD></TR>
 <TR><TD ALIGN="LEFT" >+ onCreate(savedInstanceState: Bundle)</TD></TR>
 <TR><TD ALIGN="LEFT" >+ onCreateOptionsMenu(menu: Menu): boolean</TD></TR>
 <TR><TD ALIGN="LEFT" >+ onDeleteTask(task: Task)</TD></TR>
@@ -118,7 +136,8 @@ subgraph cluster_856774308 {
 <TR><TD ALIGN="LEFT" >- onPositiveButtonClick(dialogInterface: DialogInterface)</TD></TR>
 <TR><TD ALIGN="LEFT" >- populateDialogSpinner()</TD></TR>
 <TR><TD ALIGN="LEFT" >- showAddTaskDialog()</TD></TR>
-<TR><TD ALIGN="LEFT" >- updateTasks()</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateProjects(projects: List&lt;Project&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateTasks(tasks: List&lt;Task&gt;)</TD></TR>
 </TABLE>>
 	style=filled
 	margin=0
@@ -134,12 +153,25 @@ Project2005803681[
 <TR><TD ALIGN="LEFT" >-   id: long [1]</TD></TR>
 <TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
 <HR/>
-<TR><TD ALIGN="LEFT" >- Project(id: long, name: String, color: int)</TD></TR>
 <TR><TD ALIGN="LEFT" >+ getAllProjects(): Project[]</TD></TR>
 <TR><TD ALIGN="LEFT" >+ getColor(): int</TD></TR>
 <TR><TD ALIGN="LEFT" >+ getId(): long</TD></TR>
 <TR><TD ALIGN="LEFT" >+ getName(): String</TD></TR>
 <TR><TD ALIGN="LEFT" >+ getProjectById(id: long): Project</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ProjectDataRepository1295645968[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ProjectDataRepository</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   mProjectDao: ProjectDao [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getProjects(): LiveData&lt;List&lt;Project&gt;&gt;</TD></TR>
 </TABLE>>
 	style=filled
 	margin=0
@@ -156,14 +188,31 @@ Task2005803681[
 <TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >-   projectId: long [1]</TD></TR>
 <HR/>
-<TR><TD ALIGN="LEFT" >+ Task(id: long, projectId: long, name: String, creationTimestamp: long)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getCreationTimestamp(): long</TD></TR>
 <TR><TD ALIGN="LEFT" >+ getId(): long</TD></TR>
 <TR><TD ALIGN="LEFT" >+ getName(): String</TD></TR>
 <TR><TD ALIGN="LEFT" >+ getProject(): Project</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getProjectId(): long</TD></TR>
 <TR><TD ALIGN="LEFT" >- setCreationTimestamp(creationTimestamp: long)</TD></TR>
-<TR><TD ALIGN="LEFT" >- setId(id: long)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setId(id: long)</TD></TR>
 <TR><TD ALIGN="LEFT" >- setName(name: String)</TD></TR>
 <TR><TD ALIGN="LEFT" >- setProjectId(projectId: long)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TaskDataRepository1295645968[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TaskDataRepository</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   mTaskDao: TaskDao [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ createTask(task: Task)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ deleteTask(task: Task)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTasks(): LiveData&lt;List&lt;Task&gt;&gt;</TD></TR>
 </TABLE>>
 	style=filled
 	margin=0
@@ -181,8 +230,28 @@ TaskViewHolder1419102573[
 <TR><TD ALIGN="LEFT" >-   lblProjectName: TextView [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >-   lblTaskName: TextView [0..1]</TD></TR>
 <HR/>
-<TR><TD ALIGN="LEFT" ># TaskViewHolder(itemView: View, deleteTaskListener: DeleteTaskListener)</TD></TR>
 <TR><TD ALIGN="LEFT" ># bind(task: Task)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TaskViewModel592173596[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TaskViewModel</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   mExecutor: Executor [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mProjectDataSource: ProjectDataRepository [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mProjects: LiveData&lt;List&lt;Project&gt;&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mTaskDataSource: TaskDataRepository [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ createTask(task: Task)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ deleteTask(task: Task)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getProjects(): LiveData&lt;List&lt;Project&gt;&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTasks(): LiveData&lt;List&lt;Task&gt;&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ init()</TD></TR>
 </TABLE>>
 	style=filled
 	margin=0
@@ -197,7 +266,6 @@ TasksAdapter592173596[
 <TR><TD ALIGN="LEFT" >-   deleteTaskListener: DeleteTaskListener [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >-   tasks: List&lt;Task&gt; [0..*]</TD></TR>
 <HR/>
-<TR><TD ALIGN="LEFT" ># TasksAdapter(tasks: List&lt;Task&gt;, deleteTaskListener: DeleteTaskListener)</TD></TR>
 <TR><TD ALIGN="LEFT" >+ getItemCount(): int</TD></TR>
 <TR><TD ALIGN="LEFT" >+ onBindViewHolder(taskViewHolder: TaskViewHolder, position: int)</TD></TR>
 <TR><TD ALIGN="LEFT" >+ onCreateViewHolder(viewGroup: ViewGroup, viewType: int): TaskViewHolder</TD></TR>
@@ -208,23 +276,46 @@ TasksAdapter592173596[
 	shape=plaintext
 	fillcolor="#FFFFFF"
 ];
+
+TodocDatabase1426069251[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TodocDatabase</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getInstance(context: Context): TodocDatabase</TD></TR>
+<TR><TD ALIGN="LEFT" >+ mProjectDao(): ProjectDao</TD></TR>
+<TR><TD ALIGN="LEFT" >+ mTaskDao(): TaskDao</TD></TR>
+<TR><TD ALIGN="LEFT" >- prepopulateDatabase(): Callback</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
 } 
 } 
 
 'edges    
+MainActivity592173596 -> Injection701015556[label="configureViewModel() -> provideViewModelFactory()"];
 MainActivity592173596 -> Project2005803681[label="allProjects
 [0..*]"];
-MainActivity592173596 -> Task2005803681[label="tasks
-[0..*]"];
+MainActivity592173596 -> TaskViewModel592173596[label="mTaskViewModel
+[0..1]"];
 MainActivity592173596 -> TasksAdapter592173596[label="adapter
 [0..1]"];
 Task2005803681 -> Project2005803681[label="getProject() -> getProjectById()"];
 TaskViewHolder1419102573 -> MainActivity592173596[label="deleteTaskListener
 [0..1]", arrowhead=none];
+TaskViewModel592173596 -> Project2005803681[label="mProjects
+[0..1]"];
+TaskViewModel592173596 -> ProjectDataRepository1295645968[label="mProjectDataSource
+[0..1]"];
+TaskViewModel592173596 -> TaskDataRepository1295645968[label="mTaskDataSource
+[0..1]"];
 TasksAdapter592173596 -> MainActivity592173596[label="deleteTaskListener
 [0..1]", arrowhead=none];
 TasksAdapter592173596 -> Task2005803681[label="tasks
 [0..*]"];
+TasksAdapter592173596 -> TaskViewHolder1419102573[label="onBindViewHolder() -> bind()"];
     
 }
 @enduml

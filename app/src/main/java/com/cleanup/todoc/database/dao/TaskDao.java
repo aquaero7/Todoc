@@ -13,8 +13,6 @@ import java.util.List;
 @Dao
 public interface TaskDao {
 
-    // Methods called in Dao tests
-
     // Get project's tasks
     @Query("SELECT * from task WHERE projectId = :projectId")
     LiveData<List<Task>> getProjectTasks(long projectId);
